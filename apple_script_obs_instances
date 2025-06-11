@@ -1,0 +1,22 @@
+-- Get full POSIX path to this app
+set appPath to POSIX path of (path to me)
+
+-- Extract app name (e.g., OBS-2)
+set appName to do shell script "basename \"" & appPath & "\" | sed 's/\\.app$//'"
+
+-- Extract index
+set AppleScript's text item delimiters to "-"
+set appIndex to text item -1 of appName
+set AppleScript's text item delimiters to ""
+
+-- Set up profile, collection, config path, WebSocket port
+set profileName to "profile_" & appIndex
+set collectionName to "collection_" & appIndex
+set configDir to POSIX path of ("~/.obs-multi/" & appIndex)
+set wsPort to 4455 + (appIndex as integer)
+
+-- Build full launch command
+set shellCommand to "open -n -a 'OBS' --args --multi --portable \"" & configDir & "\" --profile \"" & profileName & "\" --collection \"" & collectionName & "\" --websocket_port " & wsPort
+
+-- Run it
+do shell script shellCommand
